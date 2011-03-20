@@ -14,13 +14,17 @@ $username = $_GET['username'];
 if (preg_match('/[^a-zA-Z0-9.]/', $username)) {
   die('Only [a-zA-Z0-9] allowed');
 }
+if (file_exists('/home/'.$username)) {
+  die($username.' is already taken, sorry!');
+}
 
 $one_week = date('Y-m-d', time() + (7 * 24 * 60 * 60));
 
 $password = generatePassword();
 
-shell_exec('/usr/sbin/useradd '.$username.' -e '.$one_week.' -m -p .'.$password);
 
+shell_exec('/usr/sbin/useradd '.$username.' -e '.$one_week.' -m '.
+           '-p '.escapeshellarg(crypt($password, 'ch')));
 ?>
 <!DOCTYPE html>
 <html>
