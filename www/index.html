@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      Camp Hackathon Hack Hosting
+    </title>
+    <style>
+#status {
+  background-color: #FFEBE8;
+  border: 1px solid #DD3C10;
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+}
+    </style>
+  </head>
+  <body>
+
+
+<fb:login-button></fb:login-button>
+
+<div id="status">
+</div>
+
+<script src="iso8601.js"></script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+
+<div id="fb-root"></div>
+<script>
+window.fbAsyncInit = function() {
+  FB.init({appId: '136348336398305', status: true, cookie: true, xfbml: true});
+
+FB.getLoginStatus(function(response) {
+  $(function() {
+    if (response.session) {
+      FB.api('/114869201895800/events', function(events) {
+        $.each(events.data, function(i, event) {
+          var event = events.data[i];
+          if (Date.fromISO8601(event.end_time) > new Date() &&
+              Date.fromISO8601(event.end_time) < new Date() || true) {
+            FB.api(event.id + '/attending?limit=500', function(attending) {
+              var is_attending = false;
+              $.each(attending.data, function(j, person) {
+                if (person.id == response.session.uid) {
+                  FB.api('/me', function (me) {
+                    $('#status').html('<form action="register.php">' +
+                      'Username: <input name="username" ' +
+                      'value="' + 
+                        (me.username || me.first_name[0] + me.last_name)
+                        .toLowerCase() + '" />' + 
+                      '<input type="submit" value="Create Account" />' +
+                      '</form>');
+                  });
+                  is_attending = true;
+                }
+              });
+              if (!is_attending) {
+                $('#status').html('You aren\'t attending this event. ' +
+                  'Go <a target="_blank" '+
+                  'href="http://www.facebook.com/event.php?eid=' + event.id +
+                  '">click Attending</a>.').show();
+              }
+            });
+          }
+        });
+        if (events.data.length == 0) {
+          $('#status').text('No events are going on right now.').show();
+        }
+      });
+    } else {
+      $('#status').text('Click Login.').show();
+    }
+  });
+});
+
+
+  };
+  (function() {
+    var e = document.createElement('script'); e.async = true;
+    e.src = document.location.protocol +
+      '//connect.facebook.net/en_US/all.js';
+    document.getElementById('fb-root').appendChild(e);
+  }());
+</script>

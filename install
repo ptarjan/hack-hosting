@@ -1,0 +1,9 @@
+#!/bin/sh
+
+apt-get install git-core apache2 php5-mysql mysql-server
+
+chmod u+s /usr/sbin/useradd
+
+cp useradd /etc/defaults/useradd
+cp hack    /etc/apache2/sites-available/hack
+cp -R www  /var/www/hack
