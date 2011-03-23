@@ -5,3 +5,4 @@
 1. Webserver sandboxing, from user home directories.
 1. Database sandboxing per group.
 1. Admin interface.
+1. /etc/skel have a working website with the Facebook SDK
